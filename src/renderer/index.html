@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SawitHeight R</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-kicker">MAS POPO · v0.8</div><h1>SawitHeight R</h1><p>Register · Process · Compare</p></div>
+    <nav>
+      <button class="nav-btn active" data-page="overview-page"><span>01</span>Workflow</button>
+      <button class="nav-btn" data-page="registration-page"><span>02</span>Master Alignment</button>
+      <button class="nav-btn" data-page="period-page"><span>03</span>Process One Period</button>
+      <button class="nav-btn" data-page="compare-page"><span>04</span>Compare 2 Periods</button>
+      <button class="nav-btn" data-page="process-page"><span>05</span>Live Process Log</button>
+      <button class="nav-btn" data-page="result-page"><span>06</span>Results</button>
+    </nav>
+    <div class="sidebar-bottom"><div class="runtime-pill" id="runtime-status"><i></i><div><b>R Runtime</b><small id="runtime-version">Belum diperiksa</small></div></div><small>App <span id="app-version">-</span></small></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar"><div><p class="eyebrow">ROLLING MONITORING · OPTIONAL MASTER ALIGNMENT</p><h2 id="page-title">Workflow</h2></div><div class="top-actions"><button class="ghost" id="tutorial-btn">Tutorial v0.6.0</button><button class="ghost" id="check-env-btn">Check R</button><button class="ghost" id="install-packages-btn" disabled>Install Packages</button></div></header>
+    <div id="alert-area"></div>
+
+    <section class="page active" id="overview-page">
+      <div class="hero-panel"><span class="tag">ARSITEKTUR v0.8.0</span><h3>Registrasi hanya bila perlu. Period processing tetap mandiri.</h3><p>Jika PPK/GCP suatu periode sudah baik, <b>skip Master Alignment</b> dan langsung Process One Period. Jika QC menunjukkan posisi tidak konsisten, align target ke master full PPK/GCP terlebih dahulu, lalu gunakan hasil registered LAS sebagai input period processing.</p>
+        <div class="flow three-flow"><div class="optional-step"><b>① MASTER ALIGNMENT</b><small>Opsional · hanya untuk periode yang perlu registrasi ulang</small></div><div class="arrow">→</div><div><b>② PROCESS ONE PERIOD</b><small>Wajib · terrain → normalize → P95 → period package</small></div><div class="arrow">→</div><div><b>③ COMPARE TWO PACKAGES</b><small>Monitoring · P(t−1) + P(t) → RECHECK / NO_RECHECK</small></div></div>
+      </div>
+      <div class="grid two">
+        <div class="panel"><h3>Runtime R</h3><p class="muted">Portable self-contained memilih R bundled otomatis. System-R dapat dipilih manual.</p><label>Rscript.exe</label><div class="file-row"><input id="rscript-path" placeholder="Auto-detect / pilih Rscript.exe"><button class="ghost" data-picker="rscript-path">Browse</button></div></div>
+        <div class="panel"><h3>Siklus periode baru</h3><p class="muted">Contoh saat P3 datang setelah P1-P2 sudah berjalan:</p><div class="note"><b>PPK/GCP P3 baik</b><br>Skip ① → jalankan ② P3 → jalankan ③ P2 vs P3.<br><br><b>PPK/GCP P3 bermasalah</b><br>Jalankan ① P3→Master → hasil registered P3 masuk ke ② → lalu ③.</div></div>
+      </div>
+    </section>
+
+    <section class="page" id="registration-page">
+      <div class="section-head"><div><span class="tag">STEP ① · OPTIONAL</span><h3>Registration QC / Master Alignment</h3><p>Dipakai hanya ketika target period tidak konsisten terhadap master full PPK/GCP. Tidak melakukan ICP otomatis.</p></div></div>
+      <div class="grid two">
+        <div class="panel"><h3>Target & Master</h3>
+          <div class="form-grid"><div><label>Target period</label><input id="reg-target-period" maxlength="3" value="P5"></div><div><label>Master period</label><input id="reg-master-period" maxlength="3" value="P3"></div></div>
+          <label>Target point cloud yang akan dikoreksi</label><div class="file-row"><input id="reg-target-cloud"><button class="ghost" data-picker="reg-target-cloud">Browse</button></div>
+          <label>Master full PPK/GCP reference LAS/LAZ</label><div class="file-row"><input id="reg-master-cloud"><button class="ghost" data-picker="reg-master-cloud">Browse</button></div>
+          <label>Model transform</label><select id="reg-transform-model"><option value="TRANSLATION_3D">Translation 3D — offset XYZ saja (default)</option><option value="RIGID_3D">Rigid 3D — rotasi + translasi, scale=1</option><option value="SIMILARITY_3D">Similarity 3D / Helmert — rotasi + translasi + scale</option></select>
+          <div class="note"><b>Prinsip konservatif</b><br>Jika hanya ada offset, gunakan Translation 3D. Jangan memakai model lebih kompleks tanpa bukti QC adanya rotasi/scale issue.</div>
+        </div>
+        <div class="panel"><h3>Matched Control Points</h3>
+          <p class="muted">Transform dihitung dari titik kontrol/stable point yang memiliki ID sama pada target dan master. Format: CSV atau POINT SHP/GPKG/GeoJSON.</p>
+          <label>Target control points</label><div class="file-row"><input id="reg-target-controls"><button class="ghost" data-picker="reg-target-controls">Browse</button></div>
+          <label>Master control points</label><div class="file-row"><input id="reg-master-controls"><button class="ghost" data-picker="reg-master-controls">Browse</button></div>
+          <div class="form-grid four"><div><label>ID field</label><input id="reg-control-id" value="CONTROL_ID"></div><div><label>X field (CSV)</label><input id="reg-control-x" value="X"></div><div><label>Y field (CSV)</label><input id="reg-control-y" value="Y"></div><div><label>Z field</label><input id="reg-control-z" value="Z"></div></div>
+          <p class="muted">Untuk file spatial POINT, XY diambil dari geometry. Z diambil dari geometry Z jika tersedia; jika tidak, gunakan field Z di atas.</p>
+        </div>
+      </div>
+      <div class="grid two">
+        <div class="panel"><h3>Registration QC</h3>
+          <div class="form-grid"><div><label>Max RMSE gate (m)</label><input id="reg-rmse-gate" type="number" step="0.01" value="0" min="0"></div><div><label>LAS transform chunk</label><input id="reg-las-chunk" type="number" step="10000" value="1000000"></div></div>
+          <p class="muted"><b>0 = tidak ada hard gate.</b> Aplikasi tetap menghitung RMSE before/after dan leave-one-out RMSE. Bila gate > 0 dan QC melebihi nilai tersebut, registered LAS tidak dibuat.</p>
+        </div>
+        <div class="panel"><h3>Output</h3><label>Folder output registration</label><div class="file-row"><input id="reg-output-root"><button class="ghost" data-picker="reg-output-root">Browse</button></div><div class="note"><b>Output utama</b><br><code>registered_P5_to_P3.laz</code><br><code>registration_control_residuals.csv</code><br><code>registration_transform_matrix.csv</code><br><code>registration_manifest.json</code><br><br>Registered LAS menjadi input tahap ②.</div></div>
+      </div>
+      <div class="action-bar"><button class="ghost" id="validate-registration-btn">Validate Alignment Inputs</button><button class="primary" id="run-registration-btn">Run Master Alignment</button></div>
+    </section>
+
+    <section class="page" id="period-page">
+      <div class="section-head"><div><span class="tag">STEP ② · REQUIRED</span><h3>Process One Period</h3><p>Raw LAS yang sudah baik atau registered LAS dari Step ① diproses satu kali menjadi package mandiri.</p></div></div>
+      <div class="grid two">
+        <div class="panel"><h3>Data periode</h3>
+          <div class="form-grid"><div><label>Kode periode</label><input id="period-code" value="P5" maxlength="3"></div><div><label>Positioning / registration</label><select id="positioning-quality"><option>PPK_FULL</option><option>PPK</option><option>GCP</option><option>REGISTERED_TO_MASTER</option><option>NON_PPK</option><option>UNKNOWN</option></select></div></div>
+          <label>Dense point cloud LAS/LAZ</label><div class="file-row"><input id="point-cloud"><button class="ghost" data-picker="point-cloud">Browse</button></div>
+          <label>Titik pokok</label><div class="file-row"><input id="tree-points"><button class="ghost" data-picker="tree-points">Browse</button></div>
+          <div class="form-grid"><div><label>Field TREE_ID permanen</label><input id="tree-id-field" value="TREE_ID"></div><div><label>Peer field opsional</label><input id="peer-field" placeholder="BLOK / BATCH / kosong"></div></div>
+          <div class="form-grid"><div><label>Master period opsional</label><input id="master-period-code" maxlength="3" placeholder="P3"></div><div><label>Fallback EPSG</label><input id="fallback-epsg" type="number" placeholder="32748"></div></div>
+          <label class="check"><input type="checkbox" id="xy-alignment-confirmed"> Saya sudah memastikan point cloud dan TREE_ID berada pada frame XY yang benar.</label>
+          <label>Folder output period package</label><div class="file-row"><input id="period-output-root"><button class="ghost" data-picker="period-output-root">Browse</button></div>
+        </div>
+        <div class="panel"><h3>Terrain & normalisasi</h3>
+          <label>Terrain mode</label><select id="terrain-mode"><option value="CSF_TIN">CSF → TIN</option><option value="EXTERNAL_DTM">External DTM</option></select>
+          <div id="external-dtm-card" class="hidden"><label>External DTM GeoTIFF</label><div class="file-row"><input id="external-dtm"><button class="ghost" data-picker="external-dtm">Browse</button></div></div>
+          <div class="form-grid three"><div><label>CSF cloth</label><input id="csf-cloth-resolution" type="number" step="0.1" value="0.5"></div><div><label>Class threshold</label><input id="csf-class-threshold" type="number" step="0.05" value="0.3"></div><div><label>Rigidness</label><select id="csf-rigidness"><option>1</option><option selected>2</option><option>3</option></select></div></div>
+          <div class="form-grid"><div><label>DTM resolution (m)</label><input id="dtm-resolution" type="number" step="0.1" value="0.5"></div><div><label>Min normalized Z (m)</label><input id="min-normalized-z" type="number" step="0.01" value="-0.10"></div></div>
+          <h4>Terrain hold-out QC</h4><div class="form-grid four"><div><label>Train frac</label><input id="holdout-train-frac" type="number" step="0.05" value="0.80"></div><div><label>Seed</label><input id="holdout-seed" type="number" value="42"></div><div><label>Min ground</label><input id="holdout-min-ground" type="number" value="100"></div><div><label>Max sample</label><input id="holdout-max-ground" type="number" value="200000"></div></div>
+        </div>
+      </div>
+      <div class="grid two">
+        <div class="panel"><h3>Point cloud QC & metrics</h3>
+          <div class="checks"><label class="check"><input id="remove-duplicates" type="checkbox" checked> Hapus duplikat</label><label class="check"><input id="run-noise-filter" type="checkbox" checked> SOR noise filter</label></div>
+          <div class="form-grid four"><div><label>SOR k</label><input id="sor-k" type="number" value="10"></div><div><label>SOR m</label><input id="sor-m" type="number" step="0.1" value="3"></div><div><label>Threads</label><input id="threads" type="number" value="4"></div><div><label>Chunk TREE_ID</label><input id="metrics-chunk-size" type="number" value="250"></div></div>
+          <div class="form-grid"><div><label>Buffer radius (m)</label><input id="buffer-radius" type="number" step="0.1" value="2.0"></div><div><label>Min vegetation height (m)</label><input id="min-veg-h" type="number" step="0.05" value="0.30"></div></div>
+          <p class="muted">Estimator utama: <b>P95 normalized point cloud</b>. P99 dan Top10/20/30 tetap disimpan sebagai diagnostik.</p>
+        </div>
+        <div class="panel"><h3>Output</h3><div class="checks stack"><label class="check"><input id="save-normalized-laz" type="checkbox" checked> Simpan normalized LAZ</label><label class="check"><input id="create-nchm" type="checkbox" checked> Buat nCHM visual/QC</label><label class="check"><input id="create-qc-plots" type="checkbox" checked> Buat QC plots</label></div><label>nCHM resolution (m)</label><input id="chm-resolution" type="number" step="0.05" value="0.10"><div class="note"><b>Period Package</b><br>Berisi metrics CSV/SHP, terrain QC, manifest JSON, dan output opsional. Folder ini menjadi input tahap Compare 2 Periods.</div></div>
+      </div>
+      <div class="action-bar"><button class="ghost" id="validate-period-btn">Validate Period</button><button class="primary" id="run-period-btn">Process Period</button></div>
+    </section>
+
+    <section class="page" id="compare-page">
+      <div class="section-head"><div><span class="tag">STEP ③ · MONITORING</span><h3>Compare 2 Period Packages</h3><p>Tidak membaca ulang LAS/LAZ. Perbandingan memakai period package yang sudah selesai diproses.</p></div></div>
+      <div class="grid two">
+        <div class="panel"><h3>Pair input</h3><label>PREV period package</label><div class="file-row"><input id="prev-package" placeholder="Folder period_P4_..."><button class="ghost" data-picker="prev-package">Browse</button></div><label>CURR period package</label><div class="file-row"><input id="curr-package" placeholder="Folder period_P5_..."><button class="ghost" data-picker="curr-package">Browse</button></div><label>Folder output comparison</label><div class="file-row"><input id="compare-output-root"><button class="ghost" data-picker="compare-output-root">Browse</button></div></div>
+        <div class="panel"><h3>Apa yang dihitung</h3><div class="mini-flow"><span>ΔP95/P99/Top</span><span>Metric spread</span><span>T_TERRAIN</span><span>T_METRIC</span><span>T_TECH</span><span>Peer lower residual</span></div><div class="note"><b>Output utama</b><br><code>RECHECK</code> = wajib diperiksa kembali.<br><code>NO_RECHECK</code> = tidak wajib re-check.<br><br>Status teknis rinci tetap disimpan untuk audit penyebab.</div></div>
+      </div>
+      <div class="action-bar"><button class="ghost" id="validate-compare-btn">Validate Pair</button><button class="primary" id="run-compare-btn">Compare Packages</button></div>
+    </section>
+
+    <section class="page" id="process-page">
+      <div class="section-head"><div><span class="tag">LIVE</span><h3>Process & Live Log</h3><p>Log backend R, stdout/stderr, progress stage, dan heartbeat proses ditampilkan real-time.</p></div><button class="danger" id="cancel-btn" disabled>Cancel Process</button></div>
+      <div class="process-cards"><div><small>PROCESS</small><b id="live-process-state">IDLE</b></div><div><small>ELAPSED</small><b id="elapsed-time">00:00:00</b></div><div><small>LAST OUTPUT</small><b id="last-activity">-</b></div></div>
+      <div class="progress-panel"><div><b id="stage-label">Belum ada proses</b><span id="progress-number">0%</span></div><div class="progress-track"><div id="progress-fill"></div></div><small id="run-dir-line">-</small></div>
+      <div class="grid log-grid"><div class="panel"><h3>Stages</h3><div id="stage-list" class="stage-list"></div></div><div class="panel log-panel"><div class="log-toolbar"><h3>LIVE PROCESS LOG</h3><div><label class="check small"><input type="checkbox" id="auto-scroll-log" checked> Auto-scroll</label><button class="ghost smallbtn" id="copy-log-btn">Copy</button><button class="ghost smallbtn" id="clear-log-btn">Clear</button></div></div><pre id="log-output">Belum ada proses.</pre></div></div>
+    </section>
+
+    <section class="page" id="result-page">
+      <div id="empty-result" class="empty-state"><h3>Belum ada hasil</h3><p>Jalankan Master Alignment, Process One Period, atau Compare 2 Periods.</p></div>
+      <div id="result-content" class="hidden"><div class="section-head"><div><span class="tag" id="result-task-tag">RESULT</span><h3 id="result-title">Hasil</h3></div><div><button class="ghost" id="open-report-btn">Open Report</button><button class="primary" id="open-output-btn">Open Output Folder</button></div></div><div id="metric-grid" class="metric-grid"></div><div class="panel"><h3 id="status-heading">Status</h3><div id="status-grid" class="status-grid"></div></div><div class="panel"><h3>Preview</h3><div class="table-wrap"><table id="preview-table"></table></div></div><div class="panel"><h3>Output Files</h3><div id="output-list" class="output-list"></div></div></div>
+    </section>
+  </main>
+</div>
+<script src="app.js"></script>
+</body></html>

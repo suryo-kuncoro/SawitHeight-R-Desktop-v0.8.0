@@ -1,0 +1,48 @@
+{
+  "registration": {
+    "inputs": {
+      "target_point_cloud": "C:/Project/MAS_POPO/data/P5.laz",
+      "master_point_cloud": "C:/Project/MAS_POPO/master/P3_fullPPK.laz",
+      "target_controls": "C:/Project/MAS_POPO/control/P5_controls.csv",
+      "master_controls": "C:/Project/MAS_POPO/control/P3_controls.csv",
+      "output_root": "C:/Project/MAS_POPO/registration"
+    },
+    "parameters": {
+      "target_period_code": "P5",
+      "master_period_code": "P3",
+      "transform_model": "TRANSLATION_3D",
+      "control_id_field": "CONTROL_ID",
+      "control_x_field": "X",
+      "control_y_field": "Y",
+      "control_z_field": "Z",
+      "max_rmse_gate_m": 0,
+      "las_chunk_size": 1000000
+    }
+  },
+  "period": {
+    "inputs": {
+      "point_cloud": "C:/Project/MAS_POPO/registration/registered_P5_to_P3.laz",
+      "tree_points": "C:/Project/MAS_POPO/data/titik_pokok_sawit.shp",
+      "external_dtm": "",
+      "output_root": "C:/Project/MAS_POPO/period_packages"
+    },
+    "parameters": {
+      "period_code": "P5",
+      "tree_id_field": "TREE_ID",
+      "peer_field": "",
+      "positioning_quality": "REGISTERED_TO_MASTER",
+      "master_period_code": "P3",
+      "xy_alignment_confirmed": true,
+      "terrain_mode": "CSF_TIN",
+      "buffer_radius_m": 2.0,
+      "min_veg_h_m": 0.30
+    }
+  },
+  "compare": {
+    "inputs": {
+      "prev_package": "C:/Project/MAS_POPO/period_packages/period_P4_...",
+      "curr_package": "C:/Project/MAS_POPO/period_packages/period_P5_...",
+      "output_root": "C:/Project/MAS_POPO/comparisons"
+    }
+  }
+}
