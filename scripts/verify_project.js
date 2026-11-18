@@ -13,12 +13,12 @@ for (const item of required) {
   else console.log(`OK: ${item}`);
 }
 const assertions = [
-  ['package.json','0.8.0'],['package.json','--publish never'],
+  ['package.json','0.8.1'],['package.json','--publish never'],
   ['src/renderer/index.html','Registration QC / Master Alignment'],['src/renderer/index.html','Process One Period'],['src/renderer/index.html','Compare 2 Period Packages'],['src/renderer/index.html','LIVE PROCESS LOG'],
   ['src/preload.js','validateRegistration'],['src/main.js',"return 'registration_pipeline.R'"],['src/main.js',"type:'heartbeat'"],
   ['r/registration_pipeline.R','TRANSLATION_3D'],['r/registration_pipeline.R','RIGID_3D'],['r/registration_pipeline.R','SIMILARITY_3D'],['r/registration_pipeline.R','Leave-one-out'],['r/registration_pipeline.R','registered_'],['r/registration_pipeline.R','registration_manifest.json'],
   ['r/period_pipeline.R','period_manifest.json'],['r/period_pipeline.R','Classification!=18L'],['r/period_pipeline.R','terrain_holdout_qc'],['r/period_pipeline.R','presence_support'],
-  ['r/compare_pipeline.R','T_TECH'],['r/compare_pipeline.R','NEGATIVE_HEIGHT_OUTLIER'],['r/compare_pipeline.R',"'NO_RECHECK'"],['r/compare_pipeline.R',"'RECHECK'"],['r/compare_pipeline.R','recheck_zone_'],
+  ['r/compare_pipeline.R','T_TECH'],['r/compare_pipeline.R','NEGATIVE_HEIGHT_OUTLIER'],['r/compare_pipeline.R',"'NO_RECHECK'"],['r/compare_pipeline.R',"'RECHECK'"],['r/compare_pipeline.R','recheck_zone_'],['r/compare_pipeline.R','read_metrics_csv'],['r/compare_pipeline.R','normalize_tree_id'],['r/compare_pipeline.R','colClasses=cc'],
   ['docs/reference_tutorial.html','Rolling 2-Period'],['docs/V0.8.0_MASTER_REGISTRATION.md','Master Alignment']
 ];
 for (const [file,token] of assertions) {

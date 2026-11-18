@@ -1,4 +1,4 @@
-# SawitHeight R Desktop v0.8.0
+# SawitHeight R Desktop v0.8.1
 
 Aplikasi desktop Windows untuk monitoring tinggi relatif pokok sawit TBM dari dense point cloud SfM-MVS dengan arsitektur **Register (opsional) → Process One Period → Compare Two Periods**.
 
@@ -79,5 +79,10 @@ GitHub Actions tetap mendukung `bundle_r=true` untuk menghasilkan Portable/Setup
 
 Expected artifacts:
 
-- `SawitHeight-R-Portable-0.8.0.exe`
-- `SawitHeight-R-Setup-0.8.0.exe`
+- `SawitHeight-R-Portable-0.8.1.exe`
+- `SawitHeight-R-Setup-0.8.1.exe`
+
+
+## v0.8.1 bugfix
+- Compare 2 Periods sekarang memaksa `tree_id` CSV dan SHP menjadi character sebelum join.
+- Mempertahankan ID numerik/teks secara konsisten dan mencegah error `character` vs `integer`.

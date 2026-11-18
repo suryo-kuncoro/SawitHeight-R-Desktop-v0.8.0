@@ -1,6 +1,6 @@
 {
   "name": "sawitheight-r-desktop",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "SawitHeight R desktop: optional master registration/alignment, independent single-period processing, rolling two-period comparison, P95 relative height, residual confidence, RECHECK/NO_RECHECK, and live process log.",
   "main": "src/main.js",
   "author": "PMNP",

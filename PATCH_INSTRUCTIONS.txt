@@ -1,0 +1,9 @@
+SawitHeight R Desktop v0.8.1 bugfix dari v0.8.0
+
+1. Extract ZIP patch.
+2. Overwrite file dengan path yang sama pada repository v0.8.0.
+3. Commit/push ke GitHub.
+4. GitHub Actions -> Build Windows EXE -> bundle_r=true.
+5. Period package v0.8.0 lama TIDAK perlu diproses ulang.
+
+Fix utama: Compare 2 Periods menormalisasi tree_id CSV dan SHP menjadi character sebelum join.
